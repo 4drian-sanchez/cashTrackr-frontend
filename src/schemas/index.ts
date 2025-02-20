@@ -19,3 +19,18 @@ export const ErrorResponseSchema = z.object({
 })
 
 export const tokenSchema = z.string().length(6, {message: 'Token bo válido'})
+
+export const authenticateSchema = z.object({
+    email: z.string()
+            .min(1, {message: 'El email es obligatorio'})
+            .email({message: 'Email no válido'}),
+    password: z.string().min(6, {message: 'La contraseña es obligatoria'})
+})
+
+export const UserSchema = z.object({
+    id: z.number(),
+    name: z.string(),
+    email: z.string().email()
+})
+
+export type User = z.infer< typeof UserSchema >

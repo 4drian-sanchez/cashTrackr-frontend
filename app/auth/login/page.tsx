@@ -8,6 +8,7 @@ export const metadata : Metadata = {
 }
 
 export default function LoginPage() {
+
     return (
         <>
             <h1 className="font-black text-6xl text-purple-950">Inicia Sesión</h1>
