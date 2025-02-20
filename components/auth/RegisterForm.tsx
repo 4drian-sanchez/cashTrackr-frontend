@@ -1,15 +1,43 @@
 "use client"
 import register from '@/actions/create-account-action'
+import { useActionState, useEffect, useRef } from 'react';
+import { useFormState } from 'react-dom';
+import ErrorMessage from '../UI/ErrorMessage';
+import SuccessMessage from '../UI/SuccessMessage';
 
 export default function RegisterForm() {
 
-    console.log('registerForm')
+    const ref = useRef<HTMLFormElement>(null)
+
+    /**TODO:
+     * En versiones nuevas se utiliza useActionState
+     * Solo se usa cuando tenemos validaciones en los server actions
+     */ 
+     
+    const [state, dispatch] = useFormState(register, {
+        errors: [],
+        success: ''
+    })
+
+    useEffect(() => {   
+        if(state.success) {
+            ref.current?.reset()
+        }
+    }, [state]);
+    
     return (
         <>
+            {state.errors && state.errors.map( error => (
+                <ErrorMessage key={error}>{error}</ErrorMessage>
+            ))}
+
+            {state.success && <SuccessMessage>{state.success}</SuccessMessage>}
+
             <form
+                ref={ref}
                 className="mt-14 space-y-5"
                 noValidate
-                action={register}
+                action={dispatch}
             >
                 <div className="flex flex-col gap-2">
                     <label
