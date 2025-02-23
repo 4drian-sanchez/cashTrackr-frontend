@@ -1,19 +1,20 @@
+import 'server-only' // Aseguramos que el código sea solo del servidor
 import {cache} from 'react'
 import { cookies } from "next/headers";
 import {redirect} from 'next/navigation'
 import { UserSchema } from "../schemas";
+import getToken from './token';
 
 export  const verifySession = cache( async () => {
-    const jwtCookie = cookies().get('CASHTRAKR-TOKEN')
-    if(!jwtCookie) {
+    const token = getToken()
+    if(!token) {
         redirect('/auth/login')
     }
-    const jwt = jwtCookie.value
     
     const url = `${process.env.API_URL}/auth/user`
     const req = await fetch(url, {
         headers: {
-            Authorization: `Bearer ${jwt}`
+            Authorization: `Bearer ${token}`
         }
     })
 
