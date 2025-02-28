@@ -1,3 +1,4 @@
+"use server"
 import { cache } from "react"
 import getToken from "../auth/token"
 import { BudgetAPIResponseSchema } from "../schemas"
@@ -14,7 +15,7 @@ export const getBudget = cache( async (budgetId : string) => {
     }
   })
   const json = await req.json()
-
+  
   if(!req.ok) {
     notFound()
   }

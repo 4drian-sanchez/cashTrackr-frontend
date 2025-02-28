@@ -20,9 +20,7 @@ export default async function resetPassword( token : string, prevState : StateAc
             success: ''
         }
     }
-
-    console.log(resetPasswordResult.data.password)
-
+    
     const url = `${process.env.API_URL}/auth/reset-password/${token}`
     const req = await fetch(url, {
         method: 'POST',

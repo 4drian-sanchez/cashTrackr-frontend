@@ -1,14 +1,23 @@
 "use server"
-
 import getToken from "@/src/auth/token"
-import { addExpenseSchema, ErrorResponseSchema } from "@/src/schemas"
+import { addExpenseSchema, Budget, ErrorResponseSchema, Expense } from "@/src/schemas"
 import { revalidatePath } from "next/cache"
 
-type StateActionType = {
+type budgetAndExpenseId = {
+    budgetId: Budget['id'],
+    expenseId: Expense['id']
+}
+
+type stateActionType = {
     errors: string[]
     success: string
 }
-export default async function addExpense( budgetId: number, prevState: StateActionType, formData: FormData ) {
+
+export default async function editExpense(
+        {budgetId, expenseId} : budgetAndExpenseId,
+        prevState: stateActionType,
+        formData: FormData)
+    {
 
     const expenseData = {
         name: formData.get('name'),
@@ -23,18 +32,17 @@ export default async function addExpense( budgetId: number, prevState: StateActi
         }
     }
 
-    //Crear nuevo gasto
     const token = getToken()
-    const url = `${process.env.API_URL}/budgets/${budgetId}/expenses`
+    const url = `${process.env.API_URL}/budgets/${budgetId}/expenses/${expenseId}`
     const req = await fetch(url, {
-        method: 'POST',
+        method: 'PUT',
         headers: {
-            'Content-type': 'application/json',
-            'Authorization': `Bearer ${token}`
+            "content-type": "application/json",
+            "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify({
             name: expense.data.name,
-            amount: expense.data.amount
+            amount: expense.data.amount,
         })
     })
 
@@ -45,7 +53,7 @@ export default async function addExpense( budgetId: number, prevState: StateActi
         return {
             errors: [error],
             success: ''
-        }        
+        }
     }
 
     revalidatePath(`admin/budgets/${budgetId}`)

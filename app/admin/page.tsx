@@ -24,7 +24,6 @@ export async function getUserBudgets() {
             tags: ['all-budgets']
         }
     })
-
     const json = await req.json()
 
     const budgets = BudgetsAPIResponseSchema.parse(json)
