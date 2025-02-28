@@ -26,6 +26,8 @@ export const DraftBudgetSchema = z.object({
             .min(1, {message: 'Cantidad no válida'}),
 })
 
+export const checkPasswordSchema = z.string().min(1, {message: 'El password no puede ir vacio'})
+
 export const tokenSchema = z.string().length(6, {message: 'Token bo válido'})
 
 export const authenticateSchema = z.object({
@@ -57,6 +59,11 @@ export const BudgetAPIResponseSchema = z.object({
     userId: z.number(),
     createdAt: z.string(),
     updatedAt: z.string()
+})
+
+export const addExpenseSchema = z.object({
+    name: z.string().min(1, {message: 'EL nombre es obligatorio'}),
+    amount: z.coerce.number().min(1, {message: 'Cantidad no válida'})
 })
 
 export const BudgetsAPIResponseSchema = z.array(BudgetAPIResponseSchema)

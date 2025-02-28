@@ -1,11 +1,10 @@
+import DeleteBudgetModal from "@/components/auth/DeleteBudgetModal";
 import BudgetMenu from "@/components/budget/BudgetMenu";
 import { formatDate, formatToDollar } from "@/src/auth/format";
 import getToken from "@/src/auth/token";
 import { BudgetsAPIResponseSchema } from "@/src/schemas";
 import { Metadata } from "next";
-import { cookies } from "next/headers";
 import Link from "next/link";
-import { number } from "zod";
 
 export const metadata: Metadata = {
     title: 'CashTrackr - Panel de administrador',
@@ -20,6 +19,9 @@ export async function getUserBudgets() {
     const req = await fetch(url, {
         headers: {
             'Authorization': `Bearer ${token}`
+        },
+        next: {
+            tags: ['all-budgets']
         }
     })
 
@@ -54,7 +56,7 @@ export default async function AdminPage() {
 
             <div>
                 {budgets.length ? (
-
+                    <>
                     <ul role="list" className="divide-y divide-gray-300 border shadow-lg mt-10 ">
                         {budgets.map((budget) => (
                             <li key={budget.id} className="flex justify-between gap-x-6 p-5 ">
@@ -63,7 +65,7 @@ export default async function AdminPage() {
 
                                         <Link 
                                             href={`/admin/budgets/${budget.id}`}
-                                            className="text-5xl font-black leading-6 text-gray-900">
+                                            className="text-3xl font-black leading-6 text-gray-900">
                                                 { budget.name }
                                         </Link>
 
@@ -82,6 +84,9 @@ export default async function AdminPage() {
                             </li>
                         ))}
                     </ul>
+                        <DeleteBudgetModal/>
+                    </>
+                    
                 ) : (
                     <Link href={'/admin/budget/create'}>Empieza creando uno</Link>
                 )}

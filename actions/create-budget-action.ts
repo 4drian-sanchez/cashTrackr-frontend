@@ -2,6 +2,7 @@
 
 import getToken from "@/src/auth/token"
 import { DraftBudgetSchema } from "@/src/schemas"
+import { revalidateTag } from "next/cache"
 import { cookies } from "next/headers"
 
 type StateActionTypes = {
@@ -35,7 +36,8 @@ export default async function createBudget(prevState: StateActionTypes, formData
     })
 
     const json :string = await req.json()
-    
+    revalidateTag('/all-budgets')
+
     return {
         errors: [],
         success: json

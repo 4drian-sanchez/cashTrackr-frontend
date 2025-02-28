@@ -1,32 +1,24 @@
-import { BudgetAPIResponseSchema } from "@/src/schemas";
+import { cache } from "react";
+import { Metadata } from "next";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import EditBudgetForm from "@/components/budget/EditBudgetForm";
+import { BudgetAPIResponseSchema } from "@/src/schemas";
+import { getBudget } from "@/src/services/budgets";
 
-async function getBudgetbyId(budgetId : string) {
-  //Obetner el bodget por su id
-  const url = `${process.env.API_URL}/budgets/${budgetId}`
-  const token = cookies().get('CASHTRAKR-TOKEN')?.value
-  const req = await fetch(url, {
-    headers: {
-      "content-type": "application/json",
-      "Authorization": `Bearer ${token}`
-    }
-  })
-  const json = await req.json()
-
-  if(!req.ok) {
-    notFound()
+//Metadatos en url dinamicas
+export async function generateMetadata({params} : {params: {id: string}}) : Promise<Metadata> {
+  const budget = await getBudget(params.id)
+  return {
+    title: `CashTrackr - ${budget.name}`,
+    description: `CashTrackr - ${budget.name}`
   }
-
-  const budget = BudgetAPIResponseSchema.parse(json)
-  return budget
-  
 }
 
 export default async function EditBudgetPage({params} : {params: {id: string}}) {
 
-  const budget = await getBudgetbyId(params.id)
+  const budget = await getBudget(params.id)
   
   return (
     <>
@@ -47,7 +39,7 @@ export default async function EditBudgetPage({params} : {params: {id: string}}) 
         </Link>
       </div>
       <div className='p-10 mt-10  shadow-lg border '>
-
+        <EditBudgetForm budget={budget}/>
       </div>
     </>
   );
