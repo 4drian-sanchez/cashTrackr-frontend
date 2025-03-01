@@ -6,6 +6,7 @@ import { DraftExpense } from "@/src/schemas";
 import { useFormState } from "react-dom";
 import editExpense from "@/actions/edit-expense-action";
 import { toast } from "react-toastify";
+import ErrorMessage from "../UI/ErrorMessage";
 
 export default function EditExpenseForm({ closeModal }: { closeModal: () => void }) {
 
@@ -54,7 +55,7 @@ export default function EditExpenseForm({ closeModal }: { closeModal: () => void
         noValidate
         action={dispatch}
       >
-
+        {state.errors && state.errors.map(error => <ErrorMessage>{error}</ErrorMessage>)}
         <ExpenseForm expense={expense}/>
 
         <input
